@@ -1,0 +1,43 @@
+# Requirements for Intelligent Sales and Marketing Agent
+
+# Core Frameworks
+langchain
+langgraph
+openai
+requests
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+asyncpg
+alembic
+python-dotenv
+httpx
+
+# Web Scraping & Automation
+playwright
+beautifulsoup4
+lxml
+
+# Data & ML
+pandas
+scikit-learn
+sentence-transformers
+weaviate-client
+pinecone-client
+
+# UI (optional, for prototyping)
+streamlit
+
+# Email & Social APIs
+ # Use requests for Mailgun API integration
+python-telegram-bot
+instagrapi
+tiktokapi
+
+# Observability & Logging
+loguru
+
+# Testing
+pytest
+pytest-asyncio
