@@ -29,7 +29,7 @@ class LeadScoringAgent:
         Industry: {business.get('industry')}
         Description: {business.get('description')}
         Social Media: {business.get('social_media', '')}
-        Recent Trends: {business.get('enriched_data', '')}
+        Recent Trends: {business.get('trends', '')}
         Reason about how much this business would benefit from having a website for their business. Predict the ROI (as a float, 0-100) and the probability (0-1) that they would benefit, based on market trends and interests. Explain your reasoning.
         Return a JSON object with keys: reasoning, predicted_ROI, predicted_probability.
         """
@@ -84,7 +84,7 @@ class LeadScoringAgent:
                 score=result["predicted_probability"],
                 predicted_ROI=result["predicted_ROI"],
                 predicted_probability=result["predicted_probability"],
-                enriched_data={"reasoning": result["reasoning"], "trends": business.get('enriched_data', {})}
+                reasoning=result["reasoning"]
             )
             scored_leads.append(lead)
         # Rank by predicted_probability

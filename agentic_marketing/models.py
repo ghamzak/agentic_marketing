@@ -20,7 +20,7 @@ class Business(Base):
     # Removed social_media. Add Tavily agent fields:
     yelp_url = Column(String(256))
     yelp_description = Column(Text)
-    trends = Column(Text)
+    trends = Column(Text) # trend columns, recent promotions, etc.
     created_at = Column(DateTime, default=datetime.utcnow)
     leads = relationship("Lead", back_populates="business")
 
@@ -30,7 +30,7 @@ class Lead(Base):
     business_id = Column(Integer, ForeignKey("businesses.id"), nullable=False)
     score = Column(Float, nullable=False)
     status = Column(String(32), default="new")  # new, selected, contacted, etc.
-    enriched_data = Column(JSON)  # trend columns, recent promotions, etc.
+    reasoning = Column(Text)
     predicted_ROI = Column(Float)
     predicted_probability = Column(Float)
     created_at = Column(DateTime, default=datetime.utcnow)

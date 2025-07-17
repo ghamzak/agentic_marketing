@@ -13,6 +13,7 @@ asyncpg
 alembic
 python-dotenv
 httpx
+nest_asyncio
 
 psycopg2-binary
 # Web Scraping & Automation

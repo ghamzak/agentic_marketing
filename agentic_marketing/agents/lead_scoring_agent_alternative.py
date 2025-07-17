@@ -69,6 +69,8 @@ class LeadScoringAgentAlternative:
             }
 
     def process_and_save_leads(self):
+        from agentic_marketing.database import SessionLocal
+        results = []
         scored_leads = []
         for business in self.businesses:
             result = self.score_business(business)
@@ -77,18 +79,22 @@ class LeadScoringAgentAlternative:
                 score=result["predicted_probability"],
                 predicted_ROI=result["predicted_ROI"],
                 predicted_probability=result["predicted_probability"],
-                enriched_data={"reasoning": result["reasoning"], "trends": business.get('trends', {})}
+                reasoning=result["reasoning"]                
             )
             scored_leads.append(lead)
+            results.append({
+                "business_id": business.get('id'),
+                "name": business.get('name'),
+                "reasoning": result["reasoning"],
+                "predicted_ROI": result["predicted_ROI"],
+                "predicted_probability": result["predicted_probability"]
+            })
         # Rank by predicted_probability
         scored_leads.sort(key=lambda l: l.predicted_probability, reverse=True)
-        # Save to DB
-        import asyncio
-        async def save():
-            async with AsyncSessionLocal() as session:
-                for lead in scored_leads:
-                    session.add(lead)
-                await session.commit()
-            logger.info(f"Saved {len(scored_leads)} leads to database.")
-        asyncio.run(save())
-        return scored_leads
+        # Save to DB synchronously
+        with SessionLocal() as session:
+            for lead in scored_leads:
+                session.add(lead)
+            session.commit()
+        logger.info(f"Saved {len(scored_leads)} leads to database.")
+        return results
