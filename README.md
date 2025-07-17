@@ -1,5 +1,8 @@
 
+
 > **Project Status:** In Progress 🚧
+
+**Getting Started:** See [setup.md](./setup.md) for installation and usage instructions.
 
 # Agentic Marketing
 
