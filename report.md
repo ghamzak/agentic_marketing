@@ -45,6 +45,14 @@ playwright install
 
 ---
 
+
+## 9. Schema & Robustness Improvements (July 2025)
+**Change:** The `leads` table now uses a `reasoning` (Text) column instead of `enriched_data` (JSON). All code and migrations have been updated accordingly. If you are migrating from an older version, ensure your data and code use the new `reasoning` field.
+
+**Change:** The UI and agent code are now fully synchronous and robust for Streamlit. All lead scoring results are saved to the database and displayed in the UI without event loop or session errors.
+
+---
+
 ## General Advice
 - Always run Streamlit and other scripts from the project root.
 - Ensure all environment variables and database credentials are set up before running migrations or agents.

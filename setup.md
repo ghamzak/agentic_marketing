@@ -51,6 +51,8 @@ PYTHONPATH=. streamlit run agentic_marketing/ui.py
 ## 8. Using the UI
 - Enter region, sector, and number of results.
 - Click "Run Scraper" to test the agent and save results to the database.
+- Lead scoring results are saved to the database and displayed in the UI.
+- The UI and agent code are fully synchronous and robust for Streamlit.
 
 
 ## 9. Scraping & Data Collection
