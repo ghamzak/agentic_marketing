@@ -43,3 +43,13 @@ def find_description(query):
     if res:
         return {"description": res.get("content")}
     return {"description": None}
+
+def find_sector_trends(sector):
+    q = "latest trends in {sector}s related to using websites to increase customer engagement"
+    response = tavily_client.search(query=q, 
+                     max_results=5,                     
+                     search_depth="advanced",
+                     include_raw_content=False)
+    if response and "results" in response and isinstance(response["results"], list) and len(response["results"]) > 0:
+        return {"trends": '\n\n'.join([f"{x.get('title')}: {x.get('content')}" for x in response["results"] if x.get("content")])}
+    return {"trends": None}

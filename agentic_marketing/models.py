@@ -7,7 +7,7 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class Business(Base):
+class Business(Base):    
     __tablename__ = "businesses"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(256), nullable=False)
@@ -20,6 +20,7 @@ class Business(Base):
     # Removed social_media. Add Tavily agent fields:
     yelp_url = Column(String(256))
     yelp_description = Column(Text)
+    trends = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
     leads = relationship("Lead", back_populates="business")
 

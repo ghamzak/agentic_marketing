@@ -9,7 +9,7 @@ import re
 from bs4 import BeautifulSoup, Tag
 from typing import List, Dict, Optional
 import logging
-from .social_media_finding_agent import find_instagram_page, find_yelp_page, find_description
+from .social_media_finding_agent import find_instagram_page, find_yelp_page, find_description, find_sector_trends
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +49,9 @@ class WebScraperAgent:
         query = f"Tell me a little bit about {business_name} {self.sector} in {self.region}"
         description = find_description(query)
         return description
+
+    async def get_sector_trends(self) -> dict:
+        return find_sector_trends(self.sector)
 
     async def get_business_details(self, page, business_name: str, item) -> Dict:
         details: Dict[str, str] = {"website": "", "contact_phone": ""}
@@ -104,6 +107,7 @@ class WebScraperAgent:
                     # insta_description = insta_page.get("description")
                     desc_obj = await self.get_description(business_name)
                     description = desc_obj.get("description") if desc_obj else None
+                    trends = await self.get_sector_trends()
                 # keeping all businesses and filtering only inside the database
                 # if not details["website"]:
                     results.append({
@@ -118,11 +122,12 @@ class WebScraperAgent:
                         "region": self.region,
                         "industry": self.sector,
                         "website": details["website"],
+                        "trends": trends["trends"]
                     })
                     if len(results) >= self.max_results:
                         break
             await browser.close()
-        logger.info(f"Found {len(results)} businesses without websites.")
+        logger.info(f"Found {len(results)} businesses.")
         return results
 
     async def find_businesses_without_websites(self) -> List[Dict]:
@@ -130,5 +135,5 @@ class WebScraperAgent:
         query = f"{self.sector} in {self.region}"
         html = await self.search_google_maps(query)
         businesses = await self.parse_businesses(html)
-        logger.info(f"Found {len(businesses)} businesses without websites.")
+        logger.info(f"Found {len(businesses)} businesses.")
         return businesses
