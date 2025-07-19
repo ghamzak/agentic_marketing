@@ -23,6 +23,7 @@ playwright install
 - Missing `script.py.mako` template: Added the file manually.
 - Syntax errors in template: Fixed template logic for revision variables and imports.
 - Database connection errors: Updated `alembic.ini` with correct credentials.
+- Alembic workflow clarified: For first-time setup, generate the initial migration; for ongoing changes, generate and apply new migrations. See `setup.md` for details.
 
 ## 4. Scraper Selector Timeout
 **Error:** `Timeout exceeded waiting for locator("input[aria-label='Search Google Maps']")`  
@@ -30,7 +31,7 @@ playwright install
 
 ## 5. Database Authentication Error
 **Error:** `asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "user"`  
-**Resolution:** Updated `.env` and `alembic.ini` with correct PostgreSQL credentials.
+**Resolution:** Updated `.env` (copied from `.env.example`) and `alembic.ini` with correct PostgreSQL credentials.
 
 ## 6. Scraping Logic Issues
 **Error:** Businesses with websites were included; Instagram search failed due to Google blocking bots.  
@@ -50,6 +51,10 @@ playwright install
 **Change:** The `leads` table now uses a `reasoning` (Text) column instead of `enriched_data` (JSON). All code and migrations have been updated accordingly. If you are migrating from an older version, ensure your data and code use the new `reasoning` field.
 
 **Change:** The UI and agent code are now fully synchronous and robust for Streamlit. All lead scoring results are saved to the database and displayed in the UI without event loop or session errors.
+
+**Change:** Added `.env.example` to the repo for environment variable setup. Users should copy this to `.env` and fill in their credentials and API keys.
+
+**Change:** Streamlit UI now uses `st.session_state` to persist generated data and keep forms visible for editing and saving. If forms or buttons disappear after agent runs, this is due to Streamlit reruns and is now handled.
 
 ---
 

@@ -20,7 +20,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## 4. Install Playwright Browsers
+## 4. Install Playwright Browsers (required for scraping features)
 ```
 playwright install
 ```
@@ -34,14 +34,27 @@ playwright install
   GRANT ALL PRIVILEGES ON DATABASE agentic_marketing TO yourusername;
   \q
   ```
-- Update `config.py` and `alembic.ini` with your credentials.
+- Copy `.env.example` to `.env` and update with your database credentials and API keys (OpenAI, Tavily, etc.).
+- Update `config.py` and `alembic.ini` with your credentials if needed.
 
 ## 6. Run Alembic Migrations
-- Generate and apply migrations:
-  ```sh
-  alembic revision --autogenerate -m "Initial tables"
-  alembic upgrade head
-  ```
+- **First-time setup:**
+  - If you are starting from scratch (no migrations exist), generate the initial migration:
+    ```sh
+    alembic revision --autogenerate -m "Initial tables"
+    alembic upgrade head
+    ```
+- **If you cloned the repo and migrations are present:**
+  - Just apply all migrations:
+    ```sh
+    alembic upgrade head
+    ```
+- **When you make schema changes:**
+  - Generate a new migration and apply it:
+    ```sh
+    alembic revision --autogenerate -m "Describe your change"
+    alembic upgrade head
+    ```
 
 ## 7. Launch the UI
 ```
@@ -65,5 +78,8 @@ PYTHONPATH=. streamlit run agentic_marketing/ui.py
 
 ## 10. Debugging & Logs
 - All process steps and errors are logged to the terminal via Python logging.
+
+## 11. Troubleshooting
+- If Streamlit forms or buttons disappear after agent runs, this is due to Streamlit reruns. The UI now uses `st.session_state` to persist generated data and keep forms visible for editing and saving.
 ---
 *This guide will be updated as new features and agents are added.*
