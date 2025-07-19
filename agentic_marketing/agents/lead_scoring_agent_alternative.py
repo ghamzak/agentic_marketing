@@ -1,5 +1,5 @@
 """
-LeadScoringAgentAlternative: Uses OpenAI Agents SDK to score businesses for likelihood to benefit from a website, predicts ROI and probability, and ranks leads.
+LeadScoringAgentAlternative: Uses OpenAI Agents SDK to score businesses for likelihood to benefit from a website, predicts probability of conversion, and ranks leads.
 """
 import logging
 from typing import List, Dict
@@ -16,9 +16,8 @@ from pydantic import BaseModel, Field, ValidationError
 logger = logging.getLogger(__name__)
 
 class LeadScoreSchema(BaseModel):
-    reasoning: str = Field(..., description="LLM reasoning about ROI and probability.")
-    predicted_ROI: float = Field(..., ge=0, le=100, description="Predicted ROI (0-100)")
-    predicted_probability: float = Field(..., ge=0, le=1, description="Probability (0-1)")
+    reasoning: str = Field(..., description="LLM reasoning about business potential ROI and probability of conversion.")    
+    predicted_probability: float = Field(..., ge=0, le=1, description="Probability of conversion (0-1)")
 
 class LeadScoringAgentAlternative:
     def __init__(self, businesses: List[Dict]):
@@ -33,15 +32,15 @@ class LeadScoringAgentAlternative:
         Description: {business.get('description', '')}
         Yelp Description: {business.get('yelp_description', '')}
         Recent Trends in this sector: {business.get('trends', '')}
-        Reason about how much this business would benefit from having a website for their business. Predict the ROI (as a float, 0-100) and the probability (0-1) that they would benefit, based on market trends and interests. Explain your reasoning.
-        Return a JSON object with keys: reasoning, predicted_ROI, predicted_probability.
+        Reason about how much this business would benefit from having a website for their business. Predict the probability (0-1) that they would benefit, based on market trends and interests. Explain your reasoning.
+        Return a JSON object with keys: reasoning, predicted_probability.
         """
 
     def score_business(self, business: Dict) -> Dict:
         prompt = self.build_prompt(business)
         agent = Agent(
             name="LeadScorer",
-            instructions="You are a business analyst. Reason about ROI and probability for website benefit.",
+            instructions="You are a business analyst. Reason about the probability for website benefit.",
             output_type=LeadScoreSchema
         )
         result = Runner.run_sync(agent, prompt)
@@ -49,22 +48,19 @@ class LeadScoringAgentAlternative:
             # result.final_output is already validated by Pydantic
             parsed = result.final_output
             return {
-                "reasoning": parsed.reasoning,
-                "predicted_ROI": parsed.predicted_ROI,
+                "reasoning": parsed.reasoning,                
                 "predicted_probability": parsed.predicted_probability
             }
         except ValidationError as ve:
             logger.error(f"Pydantic validation error: {ve}")
             return {
-                "reasoning": "Validation error",
-                "predicted_ROI": 0.0,
+                "reasoning": "Validation error",                
                 "predicted_probability": 0.0
             }
         except Exception as e:
             logger.error(f"Agent SDK scoring error: {e}")
             return {
-                "reasoning": "Agent SDK error",
-                "predicted_ROI": 0.0,
+                "reasoning": "Agent SDK error",                
                 "predicted_probability": 0.0
             }
 
@@ -76,8 +72,7 @@ class LeadScoringAgentAlternative:
             result = self.score_business(business)
             lead = Lead(
                 business_id=business.get('id'),
-                score=result["predicted_probability"],
-                predicted_ROI=result["predicted_ROI"],
+                score=result["predicted_probability"],                
                 predicted_probability=result["predicted_probability"],
                 reasoning=result["reasoning"]                
             )
@@ -85,8 +80,7 @@ class LeadScoringAgentAlternative:
             results.append({
                 "business_id": business.get('id'),
                 "name": business.get('name'),
-                "reasoning": result["reasoning"],
-                "predicted_ROI": result["predicted_ROI"],
+                "reasoning": result["reasoning"],                
                 "predicted_probability": result["predicted_probability"]
             })
         # Rank by predicted_probability

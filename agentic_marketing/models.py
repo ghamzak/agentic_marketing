@@ -31,7 +31,6 @@ class Lead(Base):
     score = Column(Float, nullable=False)
     status = Column(String(32), default="new")  # new, selected, contacted, etc.
     reasoning = Column(Text)
-    predicted_ROI = Column(Float)
     predicted_probability = Column(Float)
     created_at = Column(DateTime, default=datetime.utcnow)
     business = relationship("Business", back_populates="leads")

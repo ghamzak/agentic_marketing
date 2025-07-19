@@ -13,7 +13,7 @@ AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 # Sync engine/session for Streamlit UI
 sync_engine = create_engine(DATABASE_URL.replace('postgresql+asyncpg', 'postgresql'), echo=True)
-SessionLocal = sessionmaker(bind=sync_engine)
+SessionLocal = sessionmaker(bind=sync_engine, expire_on_commit=False, autoflush=True)
 
 
 async def get_db():
